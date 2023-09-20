@@ -44,7 +44,9 @@
         <el-card style="height: 260px;">
           <div ref="echarts2" style="height: 260px;"></div>
         </el-card>
-        <el-card style="height: 260px;"></el-card>
+        <el-card style="height: 260px;">
+          <div ref="echarts3" style="height: 240px;"></div>
+        </el-card>
       </div>
     </el-col>
   </el-row>
@@ -114,7 +116,7 @@ export default {
 
       //折线图
       const echarts1 = echarts.init(this.$refs.echarts1)
-      const { orderData , userData } = data.getStatisticalData.data
+      const { orderData , userData ,videoData} = data.getStatisticalData.data
       const xAxis = Object.keys(orderData.data[0])
       console.log(orderData.data);
       var echarts1option = {
@@ -134,7 +136,7 @@ export default {
           type: 'line'
         })
       })
-      console.log(echarts1option);
+      // console.log(echarts1option);
 
       echarts1.setOption(echarts1option)
     
@@ -194,6 +196,27 @@ export default {
     
     }
     echarts2.setOption(echarts2option)
+    //饼状图
+    const echarts3 = echarts.init(this.$refs.echarts3)
+    const echart3option = {
+          tooltip: {
+            trigger: "item",
+          },
+          color: [
+            "#0f78f4",
+            "#dd536b",
+            "#9462e5",
+            "#a6a6a6",
+            "#e1bb22",
+            "#39c362",
+            "#3ed1cf",
+          ],
+          series: [
+           { data :videoData,
+            type:'pie'}
+          ],
+        }
+        echarts3.setOption(echart3option)
   })
   },   
   components: {

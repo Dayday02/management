@@ -9,11 +9,11 @@
       <!-- h3 v-show="!isCollapse">后台管理系统</h3>
       <h3 v-show="isCollapse">后台</h3> -->
       <h3>{{isCollapse ? "后台": "后台管理系统"  }}</h3>
-      <el-menu-item v-for="item in noChildren" :key="item.name" :index="item.name">
+      <el-menu-item v-for="item in noChildren" :key="item.name" :index="item.name" @click="clickMenu(item)">
         <i :class="`el-icon-${item.icon}`"></i>
         <span slot="title">{{item.label}}</span>
       </el-menu-item>
-      <el-submenu   v-for="item in hasChildren" :key="item.label" :index="item.label">
+      <el-submenu   v-for="item in hasChildren" :key="item.label" :index="item.label" >
         <template slot="title">
           <i :class="`el-icon-${item.icon}`"></i>
           <span>{{item.label}}</span>
@@ -87,7 +87,8 @@ export default {
   },
   methods: {
     clickMenu(item){
-       this.$router.push(item.path) 
+      console.log(item);
+      this.$store.commit('selectMenu',item)
     },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
