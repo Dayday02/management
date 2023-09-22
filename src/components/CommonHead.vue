@@ -1,10 +1,11 @@
 <template>
   <div class="header-container">
-    <div class="l-content"><el-button style="margin-right: 20px;" @click="handleMenu()" icon="el-icon-menu" size="mini"></el-button>
+    <div class="l-content"><el-button style="margin-right: 20px;" @click="handleMenu()" icon="el-icon-menu"
+        size="mini"></el-button>
       <el-breadcrumb separator="/">
         <!-- 面包屑 -->
-        <el-breadcrumb-item v-for=" item in tabsList" :key="item.path"
-          :to="{ path: item.path }">{{ item.label }}</el-breadcrumb-item>
+        <el-breadcrumb-item v-for=" item in tabsList" :key="item.path" :to="{ path: item.path }">{{ item.label
+        }}</el-breadcrumb-item>
       </el-breadcrumb>
 
     </div>
@@ -15,7 +16,7 @@
 
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>个人中心</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click.native="exit">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -23,6 +24,7 @@
 </template>
   
 <script>
+import Cookie from 'js-cookie';
 export default {
   data() {
     return {
@@ -32,6 +34,16 @@ export default {
   methods: {
     handleMenu() {
       this.$store.commit('collapseMenu')
+    },
+    exit() {
+      //清除cookie
+      Cookie.remove('token')
+      Cookie.remove('menu')
+      this.$router.push('./login')
+      this.$message({
+        type: 'warning',
+        message: '退出成功'
+      });
     }
   }
 }
@@ -60,19 +72,21 @@ export default {
   .l-content {
     display: flex;
     align-items: center;
-    /deep/.el-breadcrumb__item {    
+
+    /deep/.el-breadcrumb__item {
       margin-left: 0px;
+
+      .is-link {
+        font-weight: normal;
+        color: #666;
+      }
+
+      &:last-child {
         .is-link {
           font-weight: normal;
-          color: #666;
-        } 
-       
-        &:last-child{
-          .is-link {
-          font-weight: normal;
           /* color: white; */
-        } 
         }
+      }
     }
   }
 

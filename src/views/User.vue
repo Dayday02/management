@@ -1,6 +1,6 @@
 <template>
     <div class="manage">
-        <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="resetFields">
+        <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="Closedialog">
             <!-- 用户表单信息 -->
             <el-form :inline="true" ref="form" :rules="rules" :model="form" label-width="80px">
                 <el-form-item label="姓名" prop="name">
@@ -33,7 +33,19 @@
             <el-button @click="handleAdd" type="primary">
                 + 新增
             </el-button>
-            <el-table :data="tableData" style="width: 100%">
+            <!-- 搜索区域 -->
+            <el-form :model="userform" :inline=true>
+                <el-form-item >
+                    <el-input placeholder="请输入名称" v-model="userform.name"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-button type="primary" @click="onSubmit" > 查询</el-button>
+                </el-form-item>
+            </el-form>
+
+        </div>
+        <div class="common-tabel" >
+            <el-table stripe :data="tableData" style="width: 100% " >
                 <el-table-column prop="name" label="姓名" width="180">
                 </el-table-column>
                 <el-table-column prop="sex" label="性别" width="180">
@@ -51,6 +63,10 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="pager">
+                <el-pagination layout="prev, pager, next" :total=total @current-change="handlePage">
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -67,6 +83,9 @@ export default {
                 sex: '',
                 birth: '',
                 addr: ''
+            },
+            userform:{
+
             },
             rules: {
                 name: [
@@ -89,7 +108,12 @@ export default {
                 ]
             },
             tableData: [],
-            modalType: 0
+            modalType: 0,
+            total: 0,//page总条数
+            pageDate: {
+                page: 1,
+                limit: 10
+            }
 
         }
     },
@@ -123,12 +147,12 @@ export default {
             this.form = JSON.parse(JSON.stringify(row))
         },
         handleDelete(row) {
-            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            this.$confirm('是否删除此用户?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                delUser({id :row.id}).then(() => {
+                delUser({ id: row.id }).then(() => {
                     this.$message({
                         type: 'success',
                         message: '删除成功!'
@@ -149,13 +173,26 @@ export default {
             this.modalType = 0
 
         },
+        Closedialog(){
+            this.dialogVisible = false
+        },
         getList() {
-            getUser().then(({ data }) => {
+            getUser({ params: {...this.userform,...this.pageDate} }).then(({ data }) => {
                 console.log(data);
                 this.tableData = data.list
+                this.total = data.count ? data.count : 0
             })
-        }
-
+        },
+        //页码回调
+        handlePage(val) {
+            console.log(val);
+            this.pageDate.page = val
+            this.getList()
+        },
+       //列表查询
+       onSubmit(){
+           this.getList()
+       }
 
 
     },
@@ -165,3 +202,23 @@ export default {
     }
 }
 </script>
+<style lang="less" scoped>
+.manage {
+    height: 90%;
+    .manage-header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .common-tabel{
+        position: relative;
+        height: calc(100%-62px);
+        .pager{
+            position: absolute;
+            bottom: -50px;
+            right: 20px;
+            
+        }
+    }
+}
+</style>

@@ -36,11 +36,12 @@
  
 </template>
 <script>
+import Cookies from "js-cookie";
 export default {
   data() {
     return {
 
-      menuData: [
+      /* menuData: [
         {
           path: '/',
           name: 'home',
@@ -82,7 +83,7 @@ export default {
             }
           ]
         }
-      ]
+      ] */
     }
   },
   methods: {
@@ -105,6 +106,9 @@ export default {
     //有子菜单
     hasChildren(){
       return this.menuData.filter(item => item.children)
+    },
+    menuData(){
+        return  JSON.parse(Cookies.get('menu')) || this.$store.state.tab.Menu
     },
     isCollapse(){
       return this.$store.state.tab.isCollapse
