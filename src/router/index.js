@@ -8,7 +8,7 @@ import login from '@/views/Login.vue'
 import VueRouter from 'vue-router'
 import Cookies from 'js-cookie'
 const router = new VueRouter({
-    mode:'history',
+    mode:'hash',
     routes: [
         {
             path: '/',
